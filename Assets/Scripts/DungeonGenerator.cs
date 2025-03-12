@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -6,76 +7,93 @@ public class DungeonGenerator : MonoBehaviour
 {
 
     public bool splitHorizontally;
-    int booleanConverter;
-    int width = 100;
-    int height = 50;
+    private bool isSplit = false;
+    private int width = 100;
+    private int height = 50;
 
-    int newWidth;
-    int newHeight;
+    private int newWidth;
+    private int newWidthOffset;
+    private int newHeight;
+    private int newHeightOffset;
+    private int newX;
+    private int newY;
+    public int offset;
 
-    // Rooms
-    RectInt room;
+    RectInt startRoom;
+    private List<RectInt> rooms = new List<RectInt>();
 
     private void Start()
     {
-        room = new RectInt(0, 0, width, height);
+        startRoom = new RectInt(0, 0, width, height);
+        //rooms.Add(startRoom);
+        SplitRooms();
     }
 
     void Update() 
     {
-        AlgorithmsUtils.DebugRectInt(room, Color.magenta);
-        SplitRandomizer();
-    }
 
-    void SplitRandomizer()
-    {
-        for (int i = 0; i < 4; i++)
+        foreach (var room in rooms)
         {
-            booleanConverter = Random.Range(0, 2);
-            Debug.Log(booleanConverter);
-        }
-
-        if (booleanConverter == 1)
-        {
-            splitHorizontally = true;
-        }
-        else
-        {
-            splitHorizontally = false;
-        }
-        SplitDirection();
-    }
-
-    void SplitDirection() 
-    {
-        if (splitHorizontally)
-        {
-            RectInt room = new RectInt(0,0,width,height/2);
             AlgorithmsUtils.DebugRectInt(room, Color.magenta);
         }
-        else if(!splitHorizontally) 
-        {
-            RectInt room = new RectInt(0, 0, width/2, height);
-            AlgorithmsUtils.DebugRectInt(room, Color.magenta);
 
-        }
-
-        SplitSmallerRoom();
+        AlgorithmsUtils.DebugRectInt(startRoom, Color.green);
     }
 
-    void SplitSmallerRoom()
+    // TO DO: Make it randomized
+    void SplitRooms()
     {
+        newHeight = startRoom.height / 2;
+        newHeightOffset = startRoom.height - newHeight + offset;
+        newY = startRoom.y + newHeight;
+
+        newWidth = startRoom.width / 2;
+        newWidthOffset = startRoom.width - newWidth + offset;
+        newX = startRoom.x + newWidth;
+
+        // TO DO: create randomizer that splits
+
         if (splitHorizontally)
         {
-            newHeight = room.height / 4;
-            RectInt room2 = new RectInt(0, 0, width, newHeight);
-            AlgorithmsUtils.DebugRectInt(room2, Color.magenta);
+            RectInt roomHorizontalSplit = new RectInt(startRoom.x, startRoom.y, startRoom.width, newHeight);
+            RectInt roomHorizontalSplitOffset = new RectInt(startRoom.x, newY - offset, startRoom.width, newHeightOffset);
+
+            rooms.Add(roomHorizontalSplit);
+            rooms.Add(roomHorizontalSplitOffset);
+
+            //RectInt roomVerticalSplit2 = new RectInt(newX, newY, newWidth, newHeight);
+            //RectInt roomVerticalSplitOffset2 = new RectInt(startRoom.x, newY, newWidthOffset, newHeight);
+
+            //rooms.Add(roomVerticalSplit2);
+            //rooms.Add(roomVerticalSplitOffset2);
+
+            //RectInt roomVerticalSplit3 = new RectInt(newX, startRoom.y, newWidth, newHeight -offset);
+            //RectInt roomVerticalSplitOffset3 = new RectInt(startRoom.x, startRoom.y, newWidthOffset, newHeight -offset);
+
+            //rooms.Add(roomVerticalSplit3);
+            //rooms.Add(roomVerticalSplitOffset3);
+
         }
+
         if (!splitHorizontally)
         {
-            newWidth = room.width / 4;
-            RectInt room2 = new RectInt(0, 0, newWidth, height);
-            AlgorithmsUtils.DebugRectInt(room2, Color.magenta);
+            RectInt roomVerticalSplit = new RectInt(startRoom.x, startRoom.y, newWidth, startRoom.height);
+            RectInt roomVerticalSplitOffset = new RectInt(newX - offset, startRoom.y, newWidthOffset, startRoom.height);
+
+            rooms.Add(roomVerticalSplit);
+            rooms.Add(roomVerticalSplitOffset);
+
+            //RectInt roomHorizontalSplit2 = new RectInt(newX, newY, newWidth, newHeight);
+            //RectInt roomHorizontalSplitOffset2 = new RectInt(newX, startRoom.y, newWidth, newHeightOffset);
+
+            //rooms.Add(roomHorizontalSplit2);
+            //rooms.Add(roomHorizontalSplitOffset2);
+
+            //RectInt roomHorizontalSplit3 = new RectInt(startRoom.x, newY, newWidth - offset, newHeight);
+            //RectInt roomHorizontalSplitOffset3 = new RectInt(startRoom.x, startRoom.y, newWidth - offset, newHeightOffset);
+
+            //rooms.Add(roomHorizontalSplit3);
+            //rooms.Add(roomHorizontalSplitOffset3);
         }
     }
 }
