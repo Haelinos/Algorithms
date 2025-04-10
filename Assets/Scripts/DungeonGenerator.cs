@@ -66,22 +66,22 @@ public class DungeonGenerator : MonoBehaviour
         //if (Random.Range(0, 2) == 0) SplitRooms(roomA);
         //if (Random.Range(0, 2) == 0) SplitRooms(roomB);
 
-        newHeight = startRoom.height / 2;
-        newHeightOffset = startRoom.height - newHeight + offset;
-        newY = startRoom.y + newHeight;
+        newHeight = pRoom.height / 2;
+        newHeightOffset = pRoom.height - newHeight + offset;
+        newY = pRoom.y + newHeight;
 
-        newWidth = startRoom.width / 2;
-        newWidthOffset = startRoom.width - newWidth + offset;
-        newX = startRoom.x + newWidth;
+        newWidth = pRoom.width / 2;
+        newWidthOffset = pRoom.width - newWidth + offset;
+        newX = pRoom.x + newWidth;
 
-        RectInt roomVerticalSplit = new RectInt(startRoom.x, startRoom.y, newWidth, startRoom.height);
-        RectInt roomVerticalSplitOffset = new RectInt(newX - offset, startRoom.y, newWidthOffset, startRoom.height);
+        RectInt roomVerticalSplit = new RectInt(pRoom.x, pRoom.y, newWidth, pRoom.height);
+        RectInt roomVerticalSplitOffset = new RectInt(newX - offset, pRoom.y, newWidthOffset, pRoom.height);
 
         rooms.Add(roomVerticalSplit);
         rooms.Add(roomVerticalSplitOffset);
 
         RectInt roomHorizontalSplit2 = new RectInt(newX, newY, newWidth, newHeight);
-        RectInt roomHorizontalSplitOffset2 = new RectInt(newX, startRoom.y, newWidth, newHeightOffset);
+        RectInt roomHorizontalSplitOffset2 = new RectInt(newX, pRoom.y, newWidth, newHeightOffset);
 
         rooms.Add(roomHorizontalSplit2);
         rooms.Add(roomHorizontalSplitOffset2);
@@ -107,22 +107,22 @@ public class DungeonGenerator : MonoBehaviour
         //if (Random.Range(0, 2) == 0) SplitRooms(roomA);
         //if (Random.Range(0, 2) == 0) SplitRooms(roomB);
 
-        newWidth = startRoom.width / 2;
-        newWidthOffset = startRoom.width - newWidth + offset;
-        newX = startRoom.x + newWidth;
+        newWidth = pRoom.width / 2;
+        newWidthOffset = pRoom.width - newWidth + offset;
+        newX = pRoom.x + newWidth;
 
-        newHeight = startRoom.height / 2;
-        newHeightOffset = startRoom.height - newHeight + offset;
-        newY = startRoom.y + newHeight;
+        newHeight = pRoom.height / 2;
+        newHeightOffset = pRoom.height - newHeight + offset;
+        newY = pRoom.y + newHeight;
 
-        RectInt roomHorizontalSplit = new RectInt(startRoom.x, startRoom.y, startRoom.width, newHeight);
-        RectInt roomHorizontalSplitOffset = new RectInt(startRoom.x, newY - offset, startRoom.width, newHeightOffset);
+        RectInt roomHorizontalSplit = new RectInt(pRoom.x, pRoom.y, pRoom.width, newHeight);
+        RectInt roomHorizontalSplitOffset = new RectInt(pRoom.x, newY - offset, pRoom.width, newHeightOffset);
 
         rooms.Add(roomHorizontalSplit);
         rooms.Add(roomHorizontalSplitOffset);
 
         RectInt roomVerticalSplit2 = new RectInt(newX, newY, newWidth, newHeight);
-        RectInt roomVerticalSplitOffset2 = new RectInt(startRoom.x, newY, newWidthOffset, newHeight);
+        RectInt roomVerticalSplitOffset2 = new RectInt(pRoom.x, newY, newWidthOffset, newHeight);
 
         rooms.Add(roomVerticalSplit2);
         rooms.Add(roomVerticalSplitOffset2);
