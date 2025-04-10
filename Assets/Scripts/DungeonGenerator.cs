@@ -80,11 +80,11 @@ public class DungeonGenerator : MonoBehaviour
         rooms.Add(roomVerticalSplit);
         rooms.Add(roomVerticalSplitOffset);
 
-        //RectInt roomHorizontalSplit2 = new RectInt(newX, newY, newWidth, newHeight);
-        //RectInt roomHorizontalSplitOffset2 = new RectInt(newX, startRoom.y, newWidth, newHeightOffset);
+        RectInt roomHorizontalSplit2 = new RectInt(newX, newY, newWidth, newHeight);
+        RectInt roomHorizontalSplitOffset2 = new RectInt(newX, startRoom.y, newWidth, newHeightOffset);
 
-        //rooms.Add(roomHorizontalSplit2);
-        //rooms.Add(roomHorizontalSplitOffset2);
+        rooms.Add(roomHorizontalSplit2);
+        rooms.Add(roomHorizontalSplitOffset2);
 
         //RectInt roomHorizontalSplit3 = new RectInt(startRoom.x, newY, newWidth - offset, newHeight);
         //RectInt roomHorizontalSplitOffset3 = new RectInt(startRoom.x, startRoom.y, newWidth - offset, newHeightOffset);
@@ -121,11 +121,11 @@ public class DungeonGenerator : MonoBehaviour
         rooms.Add(roomHorizontalSplit);
         rooms.Add(roomHorizontalSplitOffset);
 
-        //RectInt roomVerticalSplit2 = new RectInt(newX, newY, newWidth, newHeight);
-        //RectInt roomVerticalSplitOffset2 = new RectInt(startRoom.x, newY, newWidthOffset, newHeight);
+        RectInt roomVerticalSplit2 = new RectInt(newX, newY, newWidth, newHeight);
+        RectInt roomVerticalSplitOffset2 = new RectInt(startRoom.x, newY, newWidthOffset, newHeight);
 
-        //rooms.Add(roomVerticalSplit2);
-        //rooms.Add(roomVerticalSplitOffset2);
+        rooms.Add(roomVerticalSplit2);
+        rooms.Add(roomVerticalSplitOffset2);
 
         //RectInt roomVerticalSplit3 = new RectInt(newX, startRoom.y, newWidth, newHeight - offset);
         //RectInt roomVerticalSplitOffset3 = new RectInt(startRoom.x, startRoom.y, newWidthOffset, newHeight - offset);
