@@ -9,6 +9,8 @@ public class DungeonGenerator : MonoBehaviour
     private int width = 100;
     private int height = 50;
 
+    private int minRoomSize = 6;
+
 
     RectInt startRoom;
     private List<RectInt> rooms = new List<RectInt>();
@@ -21,6 +23,12 @@ public class DungeonGenerator : MonoBehaviour
     private int newY;
     public int offset;
 
+    private void Start()
+    {
+        GenerateDungeon();
+    }
+
+    /*
     void Update() 
     {
         // Colors the rooms
@@ -31,18 +39,32 @@ public class DungeonGenerator : MonoBehaviour
 
         AlgorithmsUtils.DebugRectInt(startRoom, Color.green);
     }
+    */
 
     [Button]
     void GenerateDungeon() 
     {
         rooms.Clear();
         startRoom = new RectInt(0, 0, width, height);
-        SplitRooms(startRoom);
+
+        DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(startRoom, Color.green));
+
+        var splitResult = SplitVertically2(startRoom);
+
+        DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResult.Item1, Color.red));
+        DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResult.Item2, Color.cyan));
+
+        var splitResultRight = SplitVertically2(splitResult.Item2);
+
+        DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultRight.Item1, Color.yellow));
+        DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultRight.Item2, Color.blue));
+
+        //SplitRooms(startRoom);
     }
 
     void SplitRooms(RectInt pRoom)
     {
-        if (UnityEngine.Random.Range(0, 2) == 0)
+        if (Random.Range(0, 2) == 0)
         {
             SplitVertically(pRoom);
         }
@@ -52,19 +74,21 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
-    void SplitVertically(RectInt pRoom) 
+    (RectInt,RectInt) SplitVertically2 (RectInt pRoom)
     {
-        //int randomSplitX = Random.Range(pRoom.x + 1, pRoom.x + pRoom.width - 1);
+        int newWidth = Random.Range(minRoomSize, pRoom.width - minRoomSize);
 
-        //RectInt roomA = new RectInt(pRoom.x, pRoom.y, randomSplitX - pRoom.x, pRoom.height);
-        //RectInt roomB = new RectInt(randomSplitX, pRoom.y, pRoom.x + pRoom.width - randomSplitX, pRoom.height);
+        RectInt roomVerticalSplit = new RectInt(pRoom.x, pRoom.y, newWidth+1, pRoom.height);
+        RectInt roomVerticalSplitOffset = new RectInt(pRoom.x + newWidth, pRoom.y, pRoom.width - newWidth, pRoom.height);
 
-        //rooms.Add(roomA);
-        //rooms.Add(roomB);
+        return (roomVerticalSplit, roomVerticalSplitOffset);
 
-        //// Further split rooms recursively if desired
-        //if (Random.Range(0, 2) == 0) SplitRooms(roomA);
-        //if (Random.Range(0, 2) == 0) SplitRooms(roomB);
+       // rooms.Add(roomVerticalSplit);
+       // rooms.Add(roomVerticalSplitOffset);
+    }
+
+        void SplitVertically(RectInt pRoom) 
+    {
 
         newHeight = pRoom.height / 2;
         newHeightOffset = pRoom.height - newHeight + offset;
@@ -85,27 +109,10 @@ public class DungeonGenerator : MonoBehaviour
 
         rooms.Add(roomHorizontalSplit2);
         rooms.Add(roomHorizontalSplitOffset2);
-
-        //RectInt roomHorizontalSplit3 = new RectInt(startRoom.x, newY, newWidth - offset, newHeight);
-        //RectInt roomHorizontalSplitOffset3 = new RectInt(startRoom.x, startRoom.y, newWidth - offset, newHeightOffset);
-
-        //rooms.Add(roomHorizontalSplit3);
-        //rooms.Add(roomHorizontalSplitOffset3);
     }
 
     void SplitHorizontally(RectInt pRoom)
     {
-        //int randomSplitY = Random.Range(pRoom.y + 1, pRoom.y + pRoom.height - 1);
-
-        //RectInt roomA = new RectInt(pRoom.x, pRoom.y, pRoom.width, randomSplitY - pRoom.y);
-        //RectInt roomB = new RectInt(pRoom.x, randomSplitY, pRoom.width, pRoom.height - (randomSplitY - pRoom.y));
-
-        //rooms.Add(roomA);
-        //rooms.Add(roomB);
-
-        //// Further split rooms recursively if desired
-        //if (Random.Range(0, 2) == 0) SplitRooms(roomA);
-        //if (Random.Range(0, 2) == 0) SplitRooms(roomB);
 
         newWidth = pRoom.width / 2;
         newWidthOffset = pRoom.width - newWidth + offset;
@@ -126,12 +133,5 @@ public class DungeonGenerator : MonoBehaviour
 
         rooms.Add(roomVerticalSplit2);
         rooms.Add(roomVerticalSplitOffset2);
-
-        //RectInt roomVerticalSplit3 = new RectInt(newX, startRoom.y, newWidth, newHeight - offset);
-        //RectInt roomVerticalSplitOffset3 = new RectInt(startRoom.x, startRoom.y, newWidthOffset, newHeight - offset);
-
-        //rooms.Add(roomVerticalSplit3);
-        //rooms.Add(roomVerticalSplitOffset3);
-
     }
 }
