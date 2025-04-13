@@ -50,43 +50,29 @@ public class DungeonGenerator : MonoBehaviour
         DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(startRoom, Color.green));
 
         var splitResult = SplitVertically(startRoom);
+        //var splitResult = SplitHorizontally(startRoom);
 
-        //DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResult.Item1, Color.red));
-        //DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResult.Item2, Color.cyan));
+        // Splits rooms vertically
+        var splitResultVertical = SplitVertically(splitResult.Item1);
 
-        //var splitResultRight = SplitVertically2(splitResult.Item2);
+        DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultVertical.Item1, Color.yellow));
+        DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultVertical.Item2, Color.yellow));
 
-        //DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultRight.Item1, Color.yellow));
-        //DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultRight.Item2, Color.blue));
+        // Splits rooms horizontally
+        var splitResultHorizontal = SplitHorizontally(splitResult.Item2);
 
-        var splitResultLeft = SplitHorizontally(splitResult.Item1);
-
-        DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultLeft.Item1, Color.yellow));
-        DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultLeft.Item2, Color.blue));
-
-        //SplitRooms(startRoom);
+        DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultHorizontal.Item1, Color.blue));
+        DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultHorizontal.Item2, Color.blue));
     }
-
-    //void SplitRooms(RectInt pRoom)
-    //{
-    //    if (Random.Range(0, 2) == 0)
-    //    {
-    //        SplitVertically(pRoom);
-    //    }
-    //    else 
-    //    {
-    //        SplitHorizontally(pRoom);
-    //    }
-    //}
 
     (RectInt,RectInt) SplitVertically(RectInt pRoom)
     {
         int newWidth = Random.Range(minRoomSize, pRoom.width - minRoomSize);
 
         RectInt roomVerticalSplit = new RectInt(pRoom.x, pRoom.y, newWidth+1, pRoom.height);
-        RectInt roomVerticalSplitOffset = new RectInt(pRoom.x + newWidth, pRoom.y, pRoom.width - newWidth, pRoom.height);
+        RectInt roomVerticalSplit2 = new RectInt(pRoom.x + newWidth, pRoom.y, pRoom.width - newWidth, pRoom.height);
 
-        return (roomVerticalSplit, roomVerticalSplitOffset);
+        return (roomVerticalSplit, roomVerticalSplit2);
     }
 
     (RectInt, RectInt) SplitHorizontally(RectInt pRoom)
@@ -94,57 +80,8 @@ public class DungeonGenerator : MonoBehaviour
         int newHeight = Random.Range(minRoomSize, pRoom.height - minRoomSize);
 
         RectInt roomHorizontalSplit = new RectInt(pRoom.x, pRoom.y, pRoom.width, newHeight + 1);
-        RectInt roomHorizontalSplitOffset = new RectInt(pRoom.x, pRoom.y + newHeight, pRoom.width, pRoom.height - newHeight);
+        RectInt roomHorizontalSplit2 = new RectInt(pRoom.x, pRoom.y + newHeight, pRoom.width, pRoom.height - newHeight);
 
-        return (roomHorizontalSplit, roomHorizontalSplitOffset);
+        return (roomHorizontalSplit, roomHorizontalSplit2);
     }
-
-
-    //void SplitVertically(RectInt pRoom) 
-    //{
-
-    //    newHeight = pRoom.height / 2;
-    //    newHeightOffset = pRoom.height - newHeight + offset;
-    //    newY = pRoom.y + newHeight;
-
-    //    newWidth = pRoom.width / 2;
-    //    newWidthOffset = pRoom.width - newWidth + offset;
-    //    newX = pRoom.x + newWidth;
-
-    //    RectInt roomVerticalSplit = new RectInt(pRoom.x, pRoom.y, newWidth, pRoom.height);
-    //    RectInt roomVerticalSplitOffset = new RectInt(newX - offset, pRoom.y, newWidthOffset, pRoom.height);
-
-    //    rooms.Add(roomVerticalSplit);
-    //    rooms.Add(roomVerticalSplitOffset);
-
-    //    RectInt roomHorizontalSplit2 = new RectInt(newX, newY, newWidth, newHeight);
-    //    RectInt roomHorizontalSplitOffset2 = new RectInt(newX, pRoom.y, newWidth, newHeightOffset);
-
-    //    rooms.Add(roomHorizontalSplit2);
-    //    rooms.Add(roomHorizontalSplitOffset2);
-    //}
-
-    //void SplitHorizontally(RectInt pRoom)
-    //{
-
-    //    newWidth = pRoom.width / 2;
-    //    newWidthOffset = pRoom.width - newWidth + offset;
-    //    newX = pRoom.x + newWidth;
-
-    //    newHeight = pRoom.height / 2;
-    //    newHeightOffset = pRoom.height - newHeight + offset;
-    //    newY = pRoom.y + newHeight;
-
-    //    RectInt roomHorizontalSplit = new RectInt(pRoom.x, pRoom.y, pRoom.width, newHeight);
-    //    RectInt roomHorizontalSplitOffset = new RectInt(pRoom.x, newY - offset, pRoom.width, newHeightOffset);
-
-    //    rooms.Add(roomHorizontalSplit);
-    //    rooms.Add(roomHorizontalSplitOffset);
-
-    //    RectInt roomVerticalSplit2 = new RectInt(newX, newY, newWidth, newHeight);
-    //    RectInt roomVerticalSplitOffset2 = new RectInt(pRoom.x, newY, newWidthOffset, newHeight);
-
-    //    rooms.Add(roomVerticalSplit2);
-    //    rooms.Add(roomVerticalSplitOffset2);
-    //}
 }
