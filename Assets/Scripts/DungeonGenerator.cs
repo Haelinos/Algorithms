@@ -31,9 +31,28 @@ public class DungeonGenerator : MonoBehaviour
 
         var splitResult = SplitVertically(startRoom);
         //var splitResult = SplitHorizontally(startRoom);
+        rooms.Add(startRoom);
 
+
+        // Goes through list of rooms to check if the rooms aren't too small to split
+        for (int i = 0; i < rooms.Count; i++)
+        {
+            RectInt room = rooms[i];
+
+            if ((room.width > (minRoomSize * 2) + 1 && room.height > (minRoomSize * 2) + 1))
+            {
+                Debug.Log("Can still be split");
+            }
+            else 
+            {
+                Debug.Log("Room cannot be smaller");
+            }
+        }
+
+        // TO DO: GENERATE ROOMS AFTER CHECKED LOOP
 
         // Splits rooms vertically
+
         var splitResultVertical = SplitVertically(splitResult.Item1);
 
         DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultVertical.Item1, Color.yellow));
@@ -45,24 +64,14 @@ public class DungeonGenerator : MonoBehaviour
         DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultHorizontal.Item1, Color.blue));
         DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultHorizontal.Item2, Color.blue));
 
-        rooms.Add(startRoom);
         rooms.Add(splitResultVertical.Item1);
         rooms.Add(splitResultVertical.Item2);
         rooms.Add(splitResultHorizontal.Item1);
         rooms.Add(splitResultHorizontal.Item2);
 
-        // Goes through list of rooms to check if the rooms aren't too small to split
-        for (int i = 0; i < rooms.Count; i++)
-        {
-            RectInt room = rooms[i];
-
-            if ((room.width > (minRoomSize * 2) + 1 && room.height > (minRoomSize * 2) + 1))
-            {
-                Debug.Log("Can still be split");
-            }
-        }
-
     }
+
+    // TO DO: Make method to randomize the two methods
 
     // Splits the given rooms into two new rooms (vertical)
     (RectInt,RectInt) SplitVertically(RectInt pRoom)
