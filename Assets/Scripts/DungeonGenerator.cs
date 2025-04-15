@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using NaughtyAttributes;
 using UnityEngine;
+using System.Collections;
 
 public class DungeonGenerator : MonoBehaviour 
 {
@@ -28,50 +29,61 @@ public class DungeonGenerator : MonoBehaviour
         startRoom = new RectInt(0, 0, width, height);
 
         DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(startRoom, Color.green));
-
         var splitResult = SplitVertically(startRoom);
         //var splitResult = SplitHorizontally(startRoom);
         rooms.Add(startRoom);
 
 
         // Goes through list of rooms to check if the rooms aren't too small to split
-        for (int i = 0; i < rooms.Count; i++)
+        for (int i = 0; i < 10; i++)
         {
             RectInt room = rooms[i];
 
             if ((room.width > (minRoomSize * 2) + 1 && room.height > (minRoomSize * 2) + 1))
             {
                 Debug.Log("Can still be split");
+
+                // Splits rooms vertically
+                var splitResultVertical = SplitVertically(splitResult.Item1);
+
+                DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultVertical.Item1, Color.yellow));
+                DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultVertical.Item2, Color.yellow));
+
+
+                // Splits rooms horizontally
+                var splitResultHorizontal = SplitHorizontally(splitResult.Item1);
+
+                DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultHorizontal.Item1, Color.blue));
+                DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultHorizontal.Item2, Color.blue));
+
+                rooms.Add(splitResultVertical.Item1);
+                rooms.Add(splitResultVertical.Item2);
+
+                rooms.Add(splitResultHorizontal.Item1);
+                rooms.Add(splitResultHorizontal.Item2);
             }
             else 
             {
                 Debug.Log("Room cannot be smaller");
             }
         }
-
-        // TO DO: GENERATE ROOMS AFTER CHECKED LOOP
-
-        // Splits rooms vertically
-
-        var splitResultVertical = SplitVertically(splitResult.Item1);
-
-        DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultVertical.Item1, Color.yellow));
-        DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultVertical.Item2, Color.yellow));
-
-        // Splits rooms horizontally
-        var splitResultHorizontal = SplitHorizontally(splitResult.Item1);
-
-        DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultHorizontal.Item1, Color.blue));
-        DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultHorizontal.Item2, Color.blue));
-
-        rooms.Add(splitResultVertical.Item1);
-        rooms.Add(splitResultVertical.Item2);
-        rooms.Add(splitResultHorizontal.Item1);
-        rooms.Add(splitResultHorizontal.Item2);
-
     }
 
-    // TO DO: Make method to randomize the two methods
+    //IEnumerator GenerateRooms()
+    //{
+    //    Debug.Log("hello");
+
+    //    while (true) 
+    //    {
+    //        if (Input.GetKeyDown(KeyCode.Space)) 
+    //        {
+
+    //        }
+            
+    //    }
+
+    //    yield return null;
+    //}
 
     // Splits the given rooms into two new rooms (vertical)
     (RectInt,RectInt) SplitVertically(RectInt pRoom)
