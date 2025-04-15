@@ -41,20 +41,20 @@ public class DungeonGenerator : MonoBehaviour
 
             if ((room.width > (minRoomSize * 2) + 1 && room.height > (minRoomSize * 2) + 1))
             {
+                
                 Debug.Log("Can still be split");
-
-                // Splits rooms vertically
-                var splitResultVertical = SplitVertically(splitResult.Item1);
-
-                DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultVertical.Item1, Color.yellow));
-                DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultVertical.Item2, Color.yellow));
-
 
                 // Splits rooms horizontally
                 var splitResultHorizontal = SplitHorizontally(splitResult.Item1);
 
                 DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultHorizontal.Item1, Color.blue));
                 DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultHorizontal.Item2, Color.blue));
+
+                // Splits rooms vertically
+                var splitResultVertical = SplitVertically(splitResultHorizontal.Item2);
+
+                DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultVertical.Item1, Color.yellow));
+                DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(splitResultVertical.Item2, Color.yellow));
 
                 rooms.Add(splitResultVertical.Item1);
                 rooms.Add(splitResultVertical.Item2);
@@ -64,6 +64,7 @@ public class DungeonGenerator : MonoBehaviour
             }
             else 
             {
+                rooms.RemoveAt(rooms.Count - 1);
                 Debug.Log("Room cannot be smaller");
             }
         }
