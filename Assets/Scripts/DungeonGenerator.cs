@@ -30,12 +30,11 @@ public class DungeonGenerator : MonoBehaviour
 
         DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(startRoom, Color.green));
         var splitResult = SplitVertically(startRoom);
-        //var splitResult = SplitHorizontally(startRoom);
         rooms.Add(startRoom);
 
 
         // Goes through list of rooms to check if the rooms aren't too small to split
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 5; i++)
         {
             RectInt room = rooms[i];
 
@@ -64,6 +63,7 @@ public class DungeonGenerator : MonoBehaviour
             }
             else 
             {
+                Debug.Log(room);
                 rooms.RemoveAt(rooms.Count - 1);
                 Debug.Log("Room cannot be smaller");
             }
@@ -112,6 +112,7 @@ public class DungeonGenerator : MonoBehaviour
     void ListContentDebug()
     {
         Debug.Log("Current rooms in the list:");
+        Debug.Log("Amount of rooms in the list: " + rooms.Count);
         foreach (var room in rooms)
         {
             Debug.Log(room);
