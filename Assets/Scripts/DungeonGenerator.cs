@@ -32,9 +32,10 @@ public class DungeonGenerator : MonoBehaviour
         var splitResult = SplitVertically(startRoom);
         rooms.Add(startRoom);
 
+        int setRoomCount = rooms.Count; // to avoid out of index for now
 
         // Goes through list of rooms to check if the rooms aren't too small to split
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < setRoomCount; i++)
         {
             RectInt room = rooms[i];
 
@@ -64,8 +65,10 @@ public class DungeonGenerator : MonoBehaviour
             else 
             {
                 Debug.Log(room);
-                rooms.RemoveAt(rooms.Count - 1);
                 Debug.Log("Room cannot be smaller");
+                var index = rooms.IndexOf(rooms[i]);
+                rooms.RemoveAt(index);
+                
             }
         }
     }
