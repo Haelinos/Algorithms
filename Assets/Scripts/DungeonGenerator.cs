@@ -4,8 +4,9 @@ using Unity.VisualScripting;
 using NaughtyAttributes;
 using UnityEngine;
 using System.Collections;
+using UnityEditor;
 
-public class DungeonGenerator : MonoBehaviour 
+public class DungeonGenerator : MonoBehaviour
 {
     private int width = 100;
     private int height = 50;
@@ -20,66 +21,84 @@ public class DungeonGenerator : MonoBehaviour
         GenerateDungeon();
     }
 
-    [Button]
+    //[Button]
     void GenerateDungeon()
     {
         rooms.Clear();
-        startRoom = new RectInt(0, 0, width, height); 
-        SplitRoom(startRoom); 
+        startRoom = new RectInt(0, 0, width, height);
+        StartCoroutine(DebugGenerator());
+        SplitRoom(startRoom);
+    }
 
-        // Visualize the rooms
-        foreach (var room in rooms)
+    IEnumerator DebugGenerator()
+    {
+        int roomIndex = 0;
+        while (true)
         {
-            DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(room, Color.green));
+            yield return new WaitUntil(() => (Input.GetKeyDown(KeyCode.Space)));
+
+            if (roomIndex < rooms.Count) 
+            {
+                roomIndex++;
+
+                // Visualize the rooms
+                foreach (var room in rooms)
+                {
+                    DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(room, Color.green));
+                }
+                
+            }
+            SplitRoom(startRoom);
         }
     }
+
 
     void SplitRoom(RectInt room)
+{
+    if (room.width <= minRoomSize * 2 && room.height <= minRoomSize * 2)
     {
-        if (room.width <= minRoomSize * 2 && room.height <= minRoomSize * 2)
-        {
-            rooms.Add(room);
-            return;
-        }
-
-        //Randomizes the split
-        bool splitVertically = Random.value > 0.5f;
-
-        if (splitVertically && room.width > minRoomSize * 2)
-        {
-            var (left, right) = SplitVertically(room);
-            SplitRoom(left);
-            SplitRoom(right);
-        }
-        else if (!splitVertically && room.height > minRoomSize * 2)
-        {
-            var (top, bottom) = SplitHorizontally(room);
-            SplitRoom(top);
-            SplitRoom(bottom);
-        }
-
-        // Checks if room can still be split without randomization
-        else if (room.width > minRoomSize * 2)
-        {
-            var (left, right) = SplitVertically(room);
-            SplitRoom(left);
-            SplitRoom(right);
-        }
-        else if (room.height > minRoomSize * 2) 
-        {
-            var (top, bottom) = SplitHorizontally(room);
-            SplitRoom(top);
-            SplitRoom(bottom);
-        }
-
-        else
-        {
-            rooms.Add(room);
-        }
+        rooms.Add(room);
+        return;
     }
 
-    // Splits the given rooms into two new rooms (vertical)
-    (RectInt,RectInt) SplitVertically(RectInt pRoom)
+    //Randomizes the split
+    bool splitVertically = Random.value > 0.5f;
+
+    if (splitVertically && room.width > minRoomSize * 2)
+    {
+        var (left, right) = SplitVertically(room);
+        SplitRoom(left);
+        SplitRoom(right);
+    }
+    else if (!splitVertically && room.height > minRoomSize * 2)
+    {
+        var (top, bottom) = SplitHorizontally(room);
+        SplitRoom(top);
+        SplitRoom(bottom);
+    }
+
+    // Checks if room can still be split without randomization
+    else if (room.width > minRoomSize * 2)
+    {
+        var (left, right) = SplitVertically(room);
+        SplitRoom(left);
+        SplitRoom(right);
+    }
+    else if (room.height > minRoomSize * 2)
+    {
+        var (top, bottom) = SplitHorizontally(room);
+        SplitRoom(top);
+        SplitRoom(bottom);
+    }
+
+    else
+    {
+        rooms.Add(room);
+    }
+}
+
+// Splits the given rooms into two new rooms (vertical)
+(RectInt,RectInt) SplitVertically(RectInt pRoom)
     {
         int newWidth = Random.Range(minRoomSize, pRoom.width - minRoomSize);
 
