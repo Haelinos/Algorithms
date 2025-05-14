@@ -36,7 +36,7 @@ public class DungeonGenerator : MonoBehaviour
 
     void SplitRoom(RectInt room)
     {
-        if (room.width <= minRoomSize * 2 || room.height <= minRoomSize * 2)
+        if (room.width <= minRoomSize * 2 && room.height <= minRoomSize * 2)
         {
             rooms.Add(room);
             return;
@@ -48,15 +48,30 @@ public class DungeonGenerator : MonoBehaviour
         if (splitVertically && room.width > minRoomSize * 2)
         {
             var (left, right) = SplitVertically(room);
-            SplitRoom(left);  
-            SplitRoom(right); 
+            SplitRoom(left);
+            SplitRoom(right);
         }
-        else if (room.height > minRoomSize * 2)
+        else if (!splitVertically && room.height > minRoomSize * 2)
         {
             var (top, bottom) = SplitHorizontally(room);
-            SplitRoom(top);     
-            SplitRoom(bottom);  
+            SplitRoom(top);
+            SplitRoom(bottom);
         }
+
+        // Checks if room can still be split without randomization
+        else if (room.width > minRoomSize * 2)
+        {
+            var (left, right) = SplitVertically(room);
+            SplitRoom(left);
+            SplitRoom(right);
+        }
+        else if (room.height > minRoomSize * 2) 
+        {
+            var (top, bottom) = SplitHorizontally(room);
+            SplitRoom(top);
+            SplitRoom(bottom);
+        }
+
         else
         {
             rooms.Add(room);
