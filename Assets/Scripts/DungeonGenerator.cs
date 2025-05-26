@@ -15,19 +15,25 @@ public class DungeonGenerator : MonoBehaviour
 
     RectInt startRoom;
     private List<RectInt> rooms = new List<RectInt>();
+    private List<RectInt> RoomsDone = new();
+    private List<RectInt> CheckedRooms = new();
 
     private void Start()
     {
         GenerateDungeon();
     }
 
-    //[Button]
     void GenerateDungeon()
     {
         rooms.Clear();
         startRoom = new RectInt(0, 0, width, height);
-        StartCoroutine(DebugGenerator());
         SplitRoom(startRoom);
+
+        RoomsDone = new List<RectInt>(rooms);
+
+        // Start debug/check coroutines
+        StartCoroutine(DebugGenerator());
+        StartCoroutine(CheckRooms());
     }
 
     IEnumerator DebugGenerator()
@@ -48,11 +54,37 @@ public class DungeonGenerator : MonoBehaviour
                 }
                 
             }
-            SplitRoom(startRoom);
         }
     }
 
+    // Debugging & Checking every room
+    IEnumerator CheckRooms()
+    {
+        yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.C));
+        Debug.Log("C was pressed, starting room check!");
 
+        CheckedRooms.Clear();
+        Queue<RectInt> myQueue = new Queue<RectInt>(RoomsDone);
+        Debug.Log("RoomsDone count: " + RoomsDone.Count);
+
+        while (myQueue.Count > 0)
+        {
+            // Wait for V key down
+            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.V));
+
+            // Process one room
+            RectInt current = myQueue.Dequeue();
+            CheckedRooms.Add(current);
+
+            DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(current, Color.cyan));
+            Debug.Log(current + " is checked!");
+
+            // Prevent holding key from triggering again immediately
+            yield return new WaitUntil(() => !Input.GetKey(KeyCode.V));
+        }
+
+        Debug.Log("Done checking rooms");
+    }
     void SplitRoom(RectInt room)
 {
     if (room.width <= minRoomSize * 2 && room.height <= minRoomSize * 2)
