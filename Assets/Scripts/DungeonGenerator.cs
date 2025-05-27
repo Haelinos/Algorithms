@@ -152,8 +152,7 @@ public class DungeonGenerator : MonoBehaviour
     }
 
     // Checks which rooms are intersecting with each other.
-    [Button]
-    void CheckIntersection()
+    IEnumerator CheckIntersection()
     {
         for (int i = 0; i < rooms.Count; i++)
         {
@@ -165,11 +164,17 @@ public class DungeonGenerator : MonoBehaviour
                 if (AlgorithmsUtils.Intersects(roomA, roomB)) 
                 {
                     Debug.Log(roomA + " Intersects with " + roomB);
+
+                    // Visualize the intersections
+                    RectInt visualIntersect = AlgorithmsUtils.Intersect(roomA, roomB);
+                    DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(visualIntersect, Color.yellow));
                 }
+
+                yield return null;
             }
         }
     }
-
+ 
     [Button]
     void ListContentDebug()
     {
@@ -179,5 +184,11 @@ public class DungeonGenerator : MonoBehaviour
         {
             Debug.Log(room);
         }
+    }
+
+    [Button]
+    void DebugIntersection() 
+    {
+        StartCoroutine(CheckIntersection());
     }
 } 
