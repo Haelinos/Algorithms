@@ -130,7 +130,7 @@ public class DungeonGenerator : MonoBehaviour
 }
 
 // Splits the given rooms into two new rooms (vertical)
-(RectInt,RectInt) SplitVertically(RectInt pRoom)
+    (RectInt,RectInt) SplitVertically(RectInt pRoom)
     {
         int newWidth = Random.Range(minRoomSize, pRoom.width - minRoomSize);
 
@@ -149,6 +149,25 @@ public class DungeonGenerator : MonoBehaviour
         RectInt roomHSplit2 = new RectInt(pRoom.x, pRoom.y + newHeight, pRoom.width, pRoom.height - newHeight);
 
         return (roomHSplit, roomHSplit2);
+    }
+
+    // Checks which rooms are intersecting with each other.
+    [Button]
+    void CheckIntersection()
+    {
+        for (int i = 0; i < rooms.Count; i++)
+        {
+            for (int j = i + 1; j < rooms.Count; j++) 
+            { 
+                RectInt roomA = rooms[i];
+                RectInt roomB = rooms[j];
+
+                if (AlgorithmsUtils.Intersects(roomA, roomB)) 
+                {
+                    Debug.Log(roomA + " Intersects with " + roomB);
+                }
+            }
+        }
     }
 
     [Button]
