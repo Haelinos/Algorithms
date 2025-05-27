@@ -33,7 +33,7 @@ public class DungeonGenerator : MonoBehaviour
 
         // Start debug/check coroutines
         StartCoroutine(DebugGenerator());
-        StartCoroutine(CheckRooms());
+        //StartCoroutine(CheckRooms());
     }
 
     IEnumerator DebugGenerator()
@@ -57,15 +57,16 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
+    [Button]
     // Debugging & Checking every room
     IEnumerator CheckRooms()
     {
-        yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.LeftShift));
-        Debug.Log("C was pressed, starting room check!");
+        //yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.LeftShift));
+        //Debug.Log("C was pressed, starting room check!");
 
         CheckedRooms.Clear();
         Queue<RectInt> myQueue = new Queue<RectInt>(RoomsDone);
-        Debug.Log("RoomsDone count: " + RoomsDone.Count);
+        //Debug.Log("RoomsDone count: " + RoomsDone.Count);
 
         while (myQueue.Count > 0)
         {
@@ -79,7 +80,7 @@ public class DungeonGenerator : MonoBehaviour
             DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(current, Color.cyan));
             Debug.Log(current + " is checked!");
 
-            yield return null;
+            yield return new WaitForSeconds(0.1f);
 
             //// Prevent holding key from triggering again immediately
             //yield return new WaitUntil(() => !Input.GetKey(KeyCode.V));
