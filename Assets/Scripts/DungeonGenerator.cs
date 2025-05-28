@@ -14,9 +14,8 @@ public class DungeonGenerator : MonoBehaviour
     private int minRoomSize = 6;
 
     RectInt startRoom;
-    private List<RectInt> rooms = new List<RectInt>();
-    private List<RectInt> RoomsDone = new();
-    private List<RectInt> CheckedRooms = new();
+    private List<RectInt> roomsToSplit = new List<RectInt>();
+    private List<RectInt> roomsDone = new();
 
     private void Start()
     {
@@ -25,11 +24,8 @@ public class DungeonGenerator : MonoBehaviour
 
     void GenerateDungeon()
     {
-        rooms.Clear();
         startRoom = new RectInt(0, 0, width, height);
         SplitRoom(startRoom);
-
-        RoomsDone = new List<RectInt>(rooms);
 
         // Start debug/check coroutines
         StartCoroutine(DebugGenerator());
@@ -43,12 +39,12 @@ public class DungeonGenerator : MonoBehaviour
         {
             yield return new WaitUntil(() => (Input.GetKeyDown(KeyCode.Space)));
 
-            if (roomIndex < rooms.Count) 
+            if (roomIndex < roomsDone.Count) 
             {
                 roomIndex++;
 
                 // Visualize the rooms
-                foreach (var room in rooms)
+                foreach (var room in roomsDone)
                 {
                     DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(room, Color.green));
                 }
@@ -56,48 +52,14 @@ public class DungeonGenerator : MonoBehaviour
             }
         }
     }
-
-    [Button]
-    // Debugging & Checking every room
-    IEnumerator CheckRooms()
-    {
-        //yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.LeftShift));
-        //Debug.Log("C was pressed, starting room check!");
-
-        CheckedRooms.Clear();
-        Queue<RectInt> myQueue = new Queue<RectInt>(RoomsDone);
-        //Debug.Log("RoomsDone count: " + RoomsDone.Count);
-
-        while (myQueue.Count > 0)
-        {
-            //// Wait for V key down
-            //yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.V));
-
-            // Process one room
-            RectInt current = myQueue.Dequeue();
-            CheckedRooms.Add(current);
-
-            DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(current, Color.cyan));
-            Debug.Log(current + " is checked!");
-
-            yield return new WaitForSeconds(0.1f);
-
-            //// Prevent holding key from triggering again immediately
-            //yield return new WaitUntil(() => !Input.GetKey(KeyCode.V));
-        }
-
-        Debug.Log("Done checking rooms");
-    }
     void SplitRoom(RectInt room)
 {
     if (room.width <= minRoomSize * 2 && room.height <= minRoomSize * 2)
     {
-        rooms.Add(room);
+        //roomsToSplit.Add(room);
+        roomsDone.Add(room);
         return;
     }
-
-    //Randomizes the split
-    bool splitVertically = Random.value > 0.5f;
 
     if (room.width > minRoomSize * 2)
     {
@@ -110,11 +72,6 @@ public class DungeonGenerator : MonoBehaviour
         var (top, bottom) = SplitHorizontally(room);
         SplitRoom(top);
         SplitRoom(bottom);
-    }
-
-    else
-    {
-        rooms.Add(room);
     }
 }
 
@@ -143,12 +100,12 @@ public class DungeonGenerator : MonoBehaviour
     // Checks which rooms are intersecting with each other.
     IEnumerator CheckIntersection()
     {
-        for (int i = 0; i < rooms.Count; i++)
+        for (int i = 0; i < roomsToSplit.Count; i++)
         {
-            for (int j = i + 1; j < rooms.Count; j++) 
+            for (int j = i + 1; j < roomsToSplit.Count; j++) 
             { 
-                RectInt roomA = rooms[i];
-                RectInt roomB = rooms[j];
+                RectInt roomA = roomsToSplit[i];
+                RectInt roomB = roomsToSplit[j];
 
                 if (AlgorithmsUtils.Intersects(roomA, roomB)) 
                 {
@@ -168,8 +125,8 @@ public class DungeonGenerator : MonoBehaviour
     void ListContentDebug()
     {
         Debug.Log("Current rooms in the list:");
-        Debug.Log("Amount of rooms in the list: " + rooms.Count);
-        foreach (var room in rooms)
+        Debug.Log("Amount of rooms in the list: " + roomsToSplit.Count);
+        foreach (var room in roomsToSplit)
         {
             Debug.Log(room);
         }
