@@ -12,10 +12,11 @@ public class DungeonGenerator : MonoBehaviour
     private int height = 50;
 
     private int minRoomSize = 6;
+    private Vector3 doorSize = new Vector3(1,1,1);
 
     RectInt startRoom;
-    private List<RectInt> roomsToSplit = new List<RectInt>();
-    private List<RectInt> roomsDone = new();
+    private List<RectInt> rooms = new();
+    private List<Vector3> doorPositions = new();
 
     private void Start()
     {
@@ -39,12 +40,12 @@ public class DungeonGenerator : MonoBehaviour
         {
             yield return new WaitUntil(() => (Input.GetKeyDown(KeyCode.Space)));
 
-            if (roomIndex < roomsDone.Count) 
+            if (roomIndex < rooms.Count) 
             {
                 roomIndex++;
 
                 // Visualize the rooms
-                foreach (var room in roomsDone)
+                foreach (var room in rooms)
                 {
                     DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(room, Color.green));
                 }
@@ -57,7 +58,7 @@ public class DungeonGenerator : MonoBehaviour
     if (room.width <= minRoomSize * 2 && room.height <= minRoomSize * 2)
     {
         //roomsToSplit.Add(room);
-        roomsDone.Add(room);
+        rooms.Add(room);
         return;
     }
 
@@ -100,33 +101,43 @@ public class DungeonGenerator : MonoBehaviour
     // Checks which rooms are intersecting with each other.
     IEnumerator CheckIntersection()
     {
-        for (int i = 0; i < roomsToSplit.Count; i++)
+        for (int i = 0; i < rooms.Count; i++)
         {
-            for (int j = i + 1; j < roomsToSplit.Count; j++) 
+            for (int j = i + 1; j < rooms.Count; j++) 
             { 
-                RectInt roomA = roomsToSplit[i];
-                RectInt roomB = roomsToSplit[j];
+                RectInt roomA = rooms[i];
+                RectInt roomB = rooms[j];
 
                 if (AlgorithmsUtils.Intersects(roomA, roomB)) 
                 {
                     Debug.Log(roomA + " Intersects with " + roomB);
 
                     // Visualize the intersections
-                    RectInt visualIntersect = AlgorithmsUtils.Intersect(roomA, roomB);
-                    DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(visualIntersect, Color.yellow));
-                }
+                    RectInt intersection = AlgorithmsUtils.Intersect(roomA, roomB);
+                    DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(intersection, Color.yellow));
 
+                    Vector3 doorPos = new Vector3(intersection.center.x,0, intersection.center.y);
+                    doorPositions.Add(doorPos);
+                }
                 yield return null;
             }
         }
     }
- 
+
+    private void OnDrawGizmos()
+    {
+        foreach (var door in doorPositions) 
+        {
+            Gizmos.DrawCube(door, doorSize);
+        }
+    }
+
     [Button]
     void ListContentDebug()
     {
         Debug.Log("Current rooms in the list:");
-        Debug.Log("Amount of rooms in the list: " + roomsToSplit.Count);
-        foreach (var room in roomsToSplit)
+        Debug.Log("Amount of rooms in the list: " + rooms.Count);
+        foreach (var room in rooms)
         {
             Debug.Log(room);
         }
