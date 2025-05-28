@@ -99,21 +99,7 @@ public class DungeonGenerator : MonoBehaviour
     //Randomizes the split
     bool splitVertically = Random.value > 0.5f;
 
-    if (splitVertically && room.width > minRoomSize * 2)
-    {
-        var (left, right) = SplitVertically(room);
-        SplitRoom(left);
-        SplitRoom(right);
-    }
-    else if (!splitVertically && room.height > minRoomSize * 2)
-    {
-        var (top, bottom) = SplitHorizontally(room);
-        SplitRoom(top);
-        SplitRoom(bottom);
-    }
-
-    // Checks if room can still be split without randomization
-    else if (room.width > minRoomSize * 2)
+    if (room.width > minRoomSize * 2)
     {
         var (left, right) = SplitVertically(room);
         SplitRoom(left);
