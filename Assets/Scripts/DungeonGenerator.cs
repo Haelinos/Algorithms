@@ -5,6 +5,7 @@ using NaughtyAttributes;
 using UnityEngine;
 using System.Collections;
 using UnityEditor;
+using System.Xml.Schema;
 
 public class DungeonGenerator : MonoBehaviour
 {
@@ -116,8 +117,12 @@ public class DungeonGenerator : MonoBehaviour
                     RectInt intersection = AlgorithmsUtils.Intersect(roomA, roomB);
                     DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(intersection, Color.yellow));
 
-                    Vector3 doorPos = new Vector3(intersection.center.x,0, intersection.center.y);
-                    doorPositions.Add(doorPos);
+                    if ((intersection.width == 1 && intersection.height >= 1) || (intersection.height == 1 && intersection.width >= 1))
+                    {
+                        Vector3 doorPos = new Vector3(intersection.center.x, 0, intersection.center.y);
+                        doorPositions.Add(doorPos);
+
+                    }
                 }
                 yield return null;
             }
