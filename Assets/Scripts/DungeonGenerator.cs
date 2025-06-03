@@ -1,11 +1,7 @@
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
 using NaughtyAttributes;
-using UnityEngine;
 using System.Collections;
-using UnityEditor;
-using System.Xml.Schema;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class DungeonGenerator : MonoBehaviour
 {
@@ -13,7 +9,7 @@ public class DungeonGenerator : MonoBehaviour
     private int height = 50;
 
     private int minRoomSize = 6;
-    private Vector3 doorSize = new Vector3(1,1,1);
+    private Vector3 doorSize = new Vector3(1, 1, 1);
 
     RectInt startRoom;
     private List<RectInt> rooms = new();
@@ -41,7 +37,7 @@ public class DungeonGenerator : MonoBehaviour
         {
             yield return new WaitUntil(() => (Input.GetKeyDown(KeyCode.Space)));
 
-            if (roomIndex < rooms.Count) 
+            if (roomIndex < rooms.Count)
             {
                 roomIndex++;
 
@@ -50,35 +46,35 @@ public class DungeonGenerator : MonoBehaviour
                 {
                     DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(room, Color.green));
                 }
-                
+
             }
         }
     }
     void SplitRoom(RectInt room)
-{
-    if (room.width <= minRoomSize * 2 && room.height <= minRoomSize * 2)
     {
-        //roomsToSplit.Add(room);
-        rooms.Add(room);
-        return;
+        if (room.width <= minRoomSize * 2 && room.height <= minRoomSize * 2)
+        {
+            //roomsToSplit.Add(room);
+            rooms.Add(room);
+            return;
+        }
+
+        if (room.width > minRoomSize * 2)
+        {
+            var (left, right) = SplitVertically(room);
+            SplitRoom(left);
+            SplitRoom(right);
+        }
+        else if (room.height > minRoomSize * 2)
+        {
+            var (top, bottom) = SplitHorizontally(room);
+            SplitRoom(top);
+            SplitRoom(bottom);
+        }
     }
 
-    if (room.width > minRoomSize * 2)
-    {
-        var (left, right) = SplitVertically(room);
-        SplitRoom(left);
-        SplitRoom(right);
-    }
-    else if (room.height > minRoomSize * 2)
-    {
-        var (top, bottom) = SplitHorizontally(room);
-        SplitRoom(top);
-        SplitRoom(bottom);
-    }
-}
-
-// Splits the given rooms into two new rooms (vertical)
-    (RectInt,RectInt) SplitVertically(RectInt pRoom)
+    // Splits the given rooms into two new rooms (vertical)
+    (RectInt, RectInt) SplitVertically(RectInt pRoom)
     {
         int newWidth = Random.Range(minRoomSize, pRoom.width - minRoomSize);
 
@@ -104,46 +100,41 @@ public class DungeonGenerator : MonoBehaviour
     {
         for (int i = 0; i < rooms.Count; i++)
         {
-            for (int j = i + 1; j < rooms.Count; j++) 
-            { 
+            for (int j = i + 1; j < rooms.Count; j++)
+            {
                 RectInt roomA = rooms[i];
                 RectInt roomB = rooms[j];
 
                 if (AlgorithmsUtils.Intersects(roomA, roomB))
                 {
-                    Debug.Log(roomA + " Intersects with " + roomB);
-
                     // Visualize the intersections
                     RectInt intersection = AlgorithmsUtils.Intersect(roomA, roomB);
                     DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(intersection, Color.yellow));
 
-                    // If intersection too small, skip the intersection
-                    if ((intersection.width == 1) || (intersection.height == 1))
-                        continue;
 
-                    Vector3 doorPos;
-
-                    if (intersection.width == 1)
+                    if (intersection.width == 1 && intersection.height >= 3)
                     {
-                        int y = Random.Range(intersection.yMin, intersection.yMax);
-                        doorPos = new Vector3(intersection.xMin, 0, y);
+                        int y = Random.Range(intersection.yMin + 1, intersection.yMax - 1);
+                        Vector3 doorPos = new Vector3(intersection.xMin + 0.5f, 0, y + 0.5f);
                         doorPositions.Add(doorPos);
                     }
-                    else if (intersection.height == 1)
+
+                    else if (intersection.height == 1 && intersection.width >= 3) 
                     {
-                        int x = Random.Range(intersection.xMin, intersection.xMax);
-                        doorPos = new Vector3(x, 0, intersection.yMin);
+                        int x = Random.Range(intersection.xMin + 1, intersection.xMax - 1);
+                        Vector3 doorPos = new Vector3(x +0.5f, 0, intersection.yMin + 0.5f);
                         doorPositions.Add(doorPos);
+                    
                     }
                 }
-                yield return null;
+                yield return null; 
             }
         }
     }
 
     private void OnDrawGizmos()
     {
-        foreach (var door in doorPositions) 
+        foreach (var door in doorPositions)
         {
             Gizmos.DrawCube(door, doorSize);
         }
@@ -161,8 +152,8 @@ public class DungeonGenerator : MonoBehaviour
     }
 
     [Button]
-    void DebugIntersection() 
+    void DebugIntersection()
     {
         StartCoroutine(CheckIntersection());
     }
-} 
+}
