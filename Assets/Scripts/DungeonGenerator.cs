@@ -109,7 +109,7 @@ public class DungeonGenerator : MonoBehaviour
                 RectInt roomA = rooms[i];
                 RectInt roomB = rooms[j];
 
-                if (AlgorithmsUtils.Intersects(roomA, roomB)) 
+                if (AlgorithmsUtils.Intersects(roomA, roomB))
                 {
                     Debug.Log(roomA + " Intersects with " + roomB);
 
@@ -117,11 +117,23 @@ public class DungeonGenerator : MonoBehaviour
                     RectInt intersection = AlgorithmsUtils.Intersect(roomA, roomB);
                     DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(intersection, Color.yellow));
 
-                    if ((intersection.width == 1 && intersection.height >= 1) || (intersection.height == 1 && intersection.width >= 1))
-                    {
-                        Vector3 doorPos = new Vector3(intersection.center.x, 0, intersection.center.y);
-                        doorPositions.Add(doorPos);
+                    // If intersection too small, skip the intersection
+                    if ((intersection.width == 1) || (intersection.height == 1))
+                        continue;
 
+                    Vector3 doorPos;
+
+                    if (intersection.width == 1)
+                    {
+                        int y = Random.Range(intersection.yMin, intersection.yMax);
+                        doorPos = new Vector3(intersection.xMin, 0, y);
+                        doorPositions.Add(doorPos);
+                    }
+                    else if (intersection.height == 1)
+                    {
+                        int x = Random.Range(intersection.xMin, intersection.xMax);
+                        doorPos = new Vector3(x, 0, intersection.yMin);
+                        doorPositions.Add(doorPos);
                     }
                 }
                 yield return null;
