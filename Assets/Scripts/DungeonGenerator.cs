@@ -138,7 +138,7 @@ public class DungeonGenerator : MonoBehaviour
         foreach (var room in rooms) 
         {
             Vector3 roomCenter = new Vector3(room.center.x, 0, room.center.y);
-            Debug.Log(roomCenter);
+            navGraph[roomCenter] = new List<Vector3>();
         }
     
     }
