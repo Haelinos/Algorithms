@@ -15,6 +15,7 @@ public class DungeonGenerator : MonoBehaviour
     private List<RectInt> rooms = new();
     private List<Vector3> doorPositions = new();
 
+    Dictionary<Vector3, List<Vector3>> navGraph = new();
     private void Start()
     {
         GenerateDungeon();
@@ -124,12 +125,22 @@ public class DungeonGenerator : MonoBehaviour
                         int x = Random.Range(intersection.xMin + 1, intersection.xMax - 1);
                         Vector3 doorPos = new Vector3(x +0.5f, 0, intersection.yMin + 0.5f);
                         doorPositions.Add(doorPos);
-                    
                     }
                 }
                 yield return null; 
             }
         }
+    }
+
+    [Button]
+    private void Navigation() 
+    {
+        foreach (var room in rooms) 
+        {
+            Vector3 roomCenter = new Vector3(room.center.x, 0, room.center.y);
+            Debug.Log(roomCenter);
+        }
+    
     }
 
     private void OnDrawGizmos()
@@ -139,6 +150,8 @@ public class DungeonGenerator : MonoBehaviour
             Gizmos.DrawCube(door, doorSize);
         }
     }
+
+
 
     [Button]
     void ListContentDebug()
