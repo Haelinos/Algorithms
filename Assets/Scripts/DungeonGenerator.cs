@@ -12,10 +12,8 @@ public class DungeonGenerator : MonoBehaviour
     private Vector3 doorSize = new Vector3(1, 1, 1);
 
     RectInt startRoom;
-    private List<RectInt> rooms = new();
+    public List<RectInt> rooms = new();
     private List<Vector3> doorPositions = new();
-
-    Dictionary<Vector3, List<Vector3>> navGraph = new();
     private void Start()
     {
         GenerateDungeon();
@@ -131,18 +129,6 @@ public class DungeonGenerator : MonoBehaviour
             }
         }
     }
-
-    [Button]
-    private void Navigation() 
-    {
-        foreach (var room in rooms) 
-        {
-            Vector3 roomCenter = new Vector3(room.center.x, 0, room.center.y);
-            navGraph[roomCenter] = new List<Vector3>();
-        }
-    
-    }
-
     private void OnDrawGizmos()
     {
         foreach (var door in doorPositions)
