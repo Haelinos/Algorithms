@@ -14,6 +14,9 @@ public class DungeonGenerator : MonoBehaviour
     RectInt startRoom;
     private List<RectInt> rooms = new();
     private List<Vector3> doorPositions = new();
+
+    Graph<Vector3> roomGraph = new Graph<Vector3>();
+
     private void Start()
     {
         GenerateDungeon();
@@ -29,6 +32,7 @@ public class DungeonGenerator : MonoBehaviour
         //StartCoroutine(CheckRooms());
     }
 
+    // Generates and visualizes the dungeon rooms when Spacebar is pressed
     IEnumerator DebugGenerator()
     {
         int roomIndex = 0;
@@ -49,6 +53,8 @@ public class DungeonGenerator : MonoBehaviour
             }
         }
     }
+
+    // Recursively checks through the rooms whether it can be split or not
     void SplitRoom(RectInt room)
     {
         if (room.width <= minRoomSize * 2 && room.height <= minRoomSize * 2)
@@ -58,12 +64,14 @@ public class DungeonGenerator : MonoBehaviour
             return;
         }
 
+        // Vertical
         if (room.width > minRoomSize * 2)
         {
             var (left, right) = SplitVertically(room);
             SplitRoom(left);
             SplitRoom(right);
         }
+        // Horizontal
         else if (room.height > minRoomSize * 2)
         {
             var (top, bottom) = SplitHorizontally(room);
@@ -110,7 +118,7 @@ public class DungeonGenerator : MonoBehaviour
                     RectInt intersection = AlgorithmsUtils.Intersect(roomA, roomB);
                     DebugDrawingBatcher.BatchCall(() => AlgorithmsUtils.DebugRectInt(intersection, Color.yellow));
 
-
+                    // Prevent the doors being placed on invalid places (corners)
                     if (intersection.width == 1 && intersection.height >= 3)
                     {
                         int y = Random.Range(intersection.yMin + 1, intersection.yMax - 1);
@@ -129,6 +137,16 @@ public class DungeonGenerator : MonoBehaviour
             }
         }
     }
+
+    [Button]
+    public void CreateGraph() 
+    {
+        foreach (var room in rooms)
+        {
+            Vector3 roomCenter = new Vector3(room.center.x, 0, room.center.y);
+            roomGraph.AddNode(roomCenter);
+        }
+    }
     private void OnDrawGizmos()
     {
         foreach (var door in doorPositions)
@@ -137,7 +155,11 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
-
+    [Button]
+    void VisualizeIntersect()
+    {
+        StartCoroutine(CheckIntersection());
+    }
 
     [Button]
     void ListContentDebug()
@@ -150,9 +172,4 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
-    [Button]
-    void DebugIntersection()
-    {
-        StartCoroutine(CheckIntersection());
-    }
 }

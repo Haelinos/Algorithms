@@ -9,16 +9,18 @@ public class Graph<T>
     public Graph() { adjacencyList = new Dictionary<T, List<T>>(); }
 
 
+    // Add nodes to Graph
     public void AddNode(T node) 
     {
         if (!adjacencyList.ContainsKey(node))
         {
             adjacencyList[node] = new List<T>();
+            Debug.Log("Nodes added!");
         }
-        //Vector3 roomCenter = new Vector3(room.center.x, 0, room.center.y);
 
     }
 
+    // Add edges to Graph
     public void AddEdge(T fromNode, T toNode) 
     {
         if (!adjacencyList.ContainsKey(fromNode) || !adjacencyList.ContainsKey(toNode)) 
@@ -30,6 +32,7 @@ public class Graph<T>
         adjacencyList[toNode].Add(fromNode);
     }
 
+    // Print graph to console with nodes and connections (edges)
     public void PrintGraph() 
     {
         foreach (var node in adjacencyList) 
