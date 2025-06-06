@@ -12,7 +12,7 @@ public class DungeonGenerator : MonoBehaviour
     private Vector3 doorSize = new Vector3(1, 1, 1);
 
     RectInt startRoom;
-    public List<RectInt> rooms = new();
+    private List<RectInt> rooms = new();
     private List<Vector3> doorPositions = new();
     private void Start()
     {
