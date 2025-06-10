@@ -15,7 +15,7 @@ public class Graph<T>
         if (!adjacencyList.ContainsKey(node))
         {
             adjacencyList[node] = new List<T>();
-            Debug.Log("Nodes added!");
+            //Debug.Log("Nodes added!");
         }
 
     }

@@ -146,6 +146,23 @@ public class DungeonGenerator : MonoBehaviour
             Vector3 roomCenter = new Vector3(room.center.x, 0, room.center.y);
             roomGraph.AddNode(roomCenter);
         }
+        foreach (var door in doorPositions)
+        {
+            roomGraph.AddNode(door);
+        }
+
+        foreach (var room in rooms)
+        {
+            Vector3 roomCenter = new Vector3(room.center.x, 0, room.center.y);
+            foreach (var door in doorPositions)
+            {
+                if (room.Contains(new Vector2Int(Mathf.FloorToInt(door.x), Mathf.FloorToInt(door.z))))
+                {
+                    roomGraph.AddEdge(roomCenter, door);
+                }
+            }
+        }
+        roomGraph.PrintGraph();
     }
     private void OnDrawGizmos()
     {
