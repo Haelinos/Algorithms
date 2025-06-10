@@ -30,6 +30,7 @@ public class Graph<T>
         }
         adjacencyList[fromNode].Add(toNode);
         adjacencyList[toNode].Add(fromNode);
+
     }
 
     // Print graph to console with nodes and connections (edges)
@@ -40,5 +41,9 @@ public class Graph<T>
             string connections = string.Join(", ", node.Value);
             Debug.Log(node.Key.ToString() + "-> " + connections);
         }
+    }
+    public Dictionary<T, List<T>> GetAdjacencyList()
+    {
+        return adjacencyList;
     }
 }

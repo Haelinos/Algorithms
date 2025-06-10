@@ -1,6 +1,7 @@
 using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class DungeonGenerator : MonoBehaviour
@@ -170,6 +171,18 @@ public class DungeonGenerator : MonoBehaviour
         {
             Gizmos.DrawCube(door, doorSize);
         }
+
+        if (roomGraph != null)
+            return;
+
+        var graphData = roomGraph.GetAdjacencyList();
+        Gizmos.color = Color.cyan;
+
+        foreach (var node in graphData.Keys)
+        {
+            Gizmos.DrawSphere(node, 1f);
+        }
+
     }
 
     [Button]
