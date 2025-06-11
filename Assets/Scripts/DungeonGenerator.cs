@@ -134,14 +134,15 @@ public class DungeonGenerator : MonoBehaviour
                         doorPositions.Add(doorPos);
                     }
                 }
-                yield return null; 
             }
+            yield return new WaitForSecondsRealtime(0.01f);
         }
     }
 
     [Button]
     public void CreateGraph() 
     {
+        // Adds the locations of rooms and doors to the graph
         foreach (var room in rooms)
         {
             Vector3 roomCenter = new Vector3(room.center.x, 0, room.center.y);
@@ -152,6 +153,7 @@ public class DungeonGenerator : MonoBehaviour
             roomGraph.AddNode(door);
         }
 
+        // Adds the edges from room centers and doors to each other to the graph
         foreach (var room in rooms)
         {
             Vector3 roomCenter = new Vector3(room.center.x, 0, room.center.y);
@@ -163,26 +165,39 @@ public class DungeonGenerator : MonoBehaviour
                 }
             }
         }
+        // See graph in console
         roomGraph.PrintGraph();
     }
     private void OnDrawGizmos()
     {
+        // Draw doors
         foreach (var door in doorPositions)
         {
             Gizmos.DrawCube(door, doorSize);
         }
 
-        if (roomGraph != null)
+        // If the graph exists, the graph will be visualized
+        if (roomGraph == null)
             return;
 
         var graphData = roomGraph.GetAdjacencyList();
-        Gizmos.color = Color.cyan;
+        Gizmos.color = Color.magenta;
 
+        // Draw nodes
         foreach (var node in graphData.Keys)
         {
-            Gizmos.DrawSphere(node, 1f);
+            Gizmos.DrawSphere(node, 0.5f);
         }
 
+        // Draw edges
+        foreach (var fromNode in graphData.Keys) 
+        {
+            foreach (var toNode in graphData[fromNode]) 
+            {
+                Gizmos.DrawLine(fromNode, toNode);
+            }
+
+        }
     }
 
     [Button]
