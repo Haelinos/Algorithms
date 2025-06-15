@@ -23,6 +23,9 @@ public class DungeonGenerator : MonoBehaviour
         GenerateDungeon();
     }
 
+    /// <summary>
+    /// The GenerateDungeon function adds the start room and starts the room splitting and coroutines.
+    /// </summary>
     void GenerateDungeon()
     {
         startRoom = new RectInt(0, 0, width, height);
@@ -33,7 +36,10 @@ public class DungeonGenerator : MonoBehaviour
         //StartCoroutine(CheckRooms());
     }
 
-    // Generates and visualizes the dungeon rooms when Spacebar is pressed
+    /// <summary>
+    /// The DebugGenerator function generates and visualizes the dungeon rooms when Spacebar is pressed
+    /// </summary>
+    /// <returns></returns>
     IEnumerator DebugGenerator()
     {
         int roomIndex = 0;
@@ -55,12 +61,14 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
-    // Recursively checks through the rooms whether it can be split or not
+    /// <summary>
+    /// The SplitRoom function checks recursively through the rooms whether the room can be split or not
+    /// </summary>
+    /// <param name="room"></param>
     void SplitRoom(RectInt room)
     {
         if (room.width <= minRoomSize * 2 && room.height <= minRoomSize * 2)
         {
-            //roomsToSplit.Add(room);
             rooms.Add(room);
             return;
         }
@@ -103,7 +111,10 @@ public class DungeonGenerator : MonoBehaviour
         return (roomHSplit, roomHSplit2);
     }
 
-    // Checks which rooms are intersecting with each other.
+/// <summary>
+/// The CheckIntersection coroutine checks through the rooms which are intersected with each other, visualizes them and adds doors to valid intersections.
+/// </summary>
+/// <returns></returns>
     IEnumerator CheckIntersection()
     {
         for (int i = 0; i < rooms.Count; i++)
@@ -139,6 +150,9 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Adds all the nodes and edges to the dictionary, accessed from the Graph class to create a graph
+    /// </summary>
     [Button]
     public void CreateGraph() 
     {
@@ -168,6 +182,10 @@ public class DungeonGenerator : MonoBehaviour
         // See graph in console
         roomGraph.PrintGraph();
     }
+
+    /// <summary>
+    /// Visualizes the doors and graph with the help of Gizmos
+    /// </summary>
     private void OnDrawGizmos()
     {
         // Draw doors
@@ -200,6 +218,7 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
+    // Starts the coroutine CheckIntersection by pressing the button
     [Button]
     void VisualizeIntersect()
     {
@@ -216,5 +235,4 @@ public class DungeonGenerator : MonoBehaviour
             Debug.Log(room);
         }
     }
-
 }
