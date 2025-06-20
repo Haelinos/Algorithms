@@ -6,10 +6,10 @@ using UnityEngine;
 
 public class DungeonGenerator : MonoBehaviour
 {
-    private int width = 100;
-    private int height = 50;
+    [SerializeField] private int width = 100;
+    [SerializeField] private int height = 50;
 
-    private int minRoomSize = 6;
+    [SerializeField] private int minRoomSize = 6;
     private Vector3 doorSize = new Vector3(1, 1, 1);
 
     RectInt startRoom;
@@ -33,7 +33,6 @@ public class DungeonGenerator : MonoBehaviour
 
         // Start debug/check coroutines
         StartCoroutine(DebugGenerator());
-        //StartCoroutine(CheckRooms());
     }
 
     /// <summary>
@@ -226,10 +225,24 @@ public class DungeonGenerator : MonoBehaviour
     }
 
     [Button]
-    void ListContentDebug()
+    void DebugAmount()
     {
-        Debug.Log("Current rooms in the list:");
         Debug.Log("Amount of rooms in the list: " + rooms.Count);
+        Debug.Log("Amount of doors in the list: " + doorPositions.Count);
+
+        if (rooms.Count - 1 <= doorPositions.Count)
+        {
+            Debug.Log("Right amount of doors and rooms");
+        }
+        else 
+        {
+            Debug.Log("The doors and rooms do not have the right amount.");
+        }
+    }
+
+    [Button]
+    void DebugRoomSizes()
+    {
         foreach (var room in rooms)
         {
             Debug.Log(room);
