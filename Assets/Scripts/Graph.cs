@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Graph<T>
@@ -42,8 +43,32 @@ public class Graph<T>
             Debug.Log(node.Key.ToString() + "-> " + connections);
         }
     }
+
+    public List<T> SearchGraph(T startNode)
+    {
+
+        Queue<T> queue = new Queue<T>();
+        List<T> checkedNodes = new();
+
+        queue.Enqueue(startNode);
+        checkedNodes.Add(startNode);
+
+        while (queue.Count > 0)
+        {
+            T current = queue.Dequeue();
+            var neighbor = GetNeighbors();
+            if (!checkedNodes.Contains(neighbor))
+            {
+                checkedNodes.Add(neighbor);
+                queue.Enqueue(neighbor);
+            }
+        }
+    }
+
     public Dictionary<T, List<T>> GetAdjacencyList()
     {
         return adjacencyList;
     }
+
+
 }
