@@ -46,24 +46,35 @@ public class Graph<T>
 
     public List<T> SearchGraph(T startNode)
     {
-
+        // Create a queue and list for visited nodes
         Queue<T> queue = new Queue<T>();
-        List<T> checkedNodes = new();
+        List<T> visitedNodes = new();
 
+        // Put a node in the queue and add it to the visited list
         queue.Enqueue(startNode);
-        checkedNodes.Add(startNode);
+        visitedNodes.Add(startNode);
 
         while (queue.Count > 0)
         {
+            // Take the current node out of the queue and see if current node doesn't have neighbors
             T current = queue.Dequeue();
-            var neighbor = GetNeighbors();
-            if (!checkedNodes.Contains(neighbor))
-            {
-                checkedNodes.Add(neighbor);
-                queue.Enqueue(neighbor);
+            Debug.Log("visited, " + current);
+
+            foreach (var neighbor in adjacencyList[current])
+            { 
+                if (!visitedNodes.Contains(neighbor))
+                {
+                    visitedNodes.Add(neighbor);
+                    queue.Enqueue(neighbor);
+                }
             }
+            
         }
+        // Returns the visited nodes list
+        return visitedNodes;
     }
+
+
 
     public Dictionary<T, List<T>> GetAdjacencyList()
     {
