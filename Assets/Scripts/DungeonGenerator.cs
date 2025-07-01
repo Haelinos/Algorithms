@@ -180,6 +180,7 @@ public class DungeonGenerator : MonoBehaviour
         }
         // See graph in console
         roomGraph.PrintGraph();
+        roomGraph.ConnectedChecker();
     }
 
     /// <summary>

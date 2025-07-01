@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -74,12 +75,33 @@ public class Graph<T>
         return visitedNodes;
     }
 
-
+    // TO DO: create debug visibility of that created graph
 
     public Dictionary<T, List<T>> GetAdjacencyList()
     {
         return adjacencyList;
     }
 
+    public void ConnectedChecker()
+    {
+        if (adjacencyList.Count == 0)
+        {
+            Debug.Log("Graph is empty");
+            return;
+        }
 
+        // Get the first node in the dictionary and store the reachable nodes in the list
+        T startNode = adjacencyList.Keys.First();
+        List<T> visitedNodes = SearchGraph(startNode);
+
+        if (visitedNodes.Count == adjacencyList.Count)
+        {
+            Debug.Log("The Graph is fully connected!");
+        }
+        else
+        {
+            Debug.LogError("The Graph is NOT fully connected!");
+        }
+
+    }
 }
