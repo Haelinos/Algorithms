@@ -212,6 +212,11 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
+    // TO DO:
+    // 1) SPAWN A FLOOR
+    // 2) SPAWN WALLS
+    // 3) REMOVE DOORS
+
     // Starts the coroutine CheckIntersection by pressing the button
     [Button]
     void VisualizeIntersect()
