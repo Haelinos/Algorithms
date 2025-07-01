@@ -155,23 +155,17 @@ public class DungeonGenerator : MonoBehaviour
     [Button]
     public void CreateGraph() 
     {
-        // Adds the locations of rooms and doors to the graph
+        // Adds the locations of rooms and doors to the Graph
         foreach (var room in rooms)
         {
             Vector3 roomCenter = new Vector3(room.center.x, 0, room.center.y);
-            roomGraph.AddNode(roomCenter);
-        }
-        foreach (var door in doorPositions)
-        {
-            roomGraph.AddNode(door);
-        }
 
-        // Adds the edges from room centers and doors to each other to the graph
-        foreach (var room in rooms)
-        {
-            Vector3 roomCenter = new Vector3(room.center.x, 0, room.center.y);
+            roomGraph.AddNode(roomCenter);
             foreach (var door in doorPositions)
             {
+                roomGraph.AddNode(door);
+
+                // Adds the edges from room centers and doors to each other to the graph
                 if (room.Contains(new Vector2Int(Mathf.FloorToInt(door.x), Mathf.FloorToInt(door.z))))
                 {
                     roomGraph.AddEdge(roomCenter, door);
