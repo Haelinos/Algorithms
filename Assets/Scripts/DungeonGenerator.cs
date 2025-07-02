@@ -20,6 +20,8 @@ public class DungeonGenerator : MonoBehaviour
     private List<Vector3> doorPositions = new();
     private int[,] tileMap;
 
+    public GameObject wall;
+
     Graph<Vector3> roomGraph = new Graph<Vector3>();
 
     private void Start()
@@ -217,11 +219,6 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
-    // TO DO:
-    // 1) SPAWN A FLOOR
-    // 2) SPAWN WALLS
-    // 3) REMOVE DOORS
-
     [Button]
     private void GenerateTileMap()
     {
@@ -231,7 +228,7 @@ public class DungeonGenerator : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                tileMap[x, y] = 0;
+                tileMap[x, y] = 1;
             }
         }
 
@@ -241,7 +238,7 @@ public class DungeonGenerator : MonoBehaviour
             {
                 for (int y = room.yMin; y < room.yMax; y++) 
                 {
-                    tileMap[x, y] = 2;
+                    tileMap[x, y] = 0;
                 }
             }
         }
@@ -250,9 +247,11 @@ public class DungeonGenerator : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                if (tileMap[x, y] == 0)
+                if (tileMap[x, y] == 1)
                 {
-                    tileMap[x, y] = 1;
+                    // Instantiate wall prefab at position (x, y)
+                    Vector3 wallPos = new Vector3(x + 0.5f, 0, y + 0.5f); // center the tile
+                    Instantiate(wall, wallPos, Quaternion.identity, transform);
                 }
             }
         }

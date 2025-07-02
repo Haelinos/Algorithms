@@ -486,6 +486,7 @@ MonoBehaviour:
   width: 100
   height: 50
   minRoomSize: 6
+  wall: {fileID: 5914503830352490484, guid: 1d2259110e940ce4e95e37ab2f25db1a, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
