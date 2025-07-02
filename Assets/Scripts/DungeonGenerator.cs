@@ -1,8 +1,11 @@
 using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Schema;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class DungeonGenerator : MonoBehaviour
 {
@@ -15,11 +18,13 @@ public class DungeonGenerator : MonoBehaviour
     RectInt startRoom;
     private List<RectInt> rooms = new();
     private List<Vector3> doorPositions = new();
+    private int[,] tileMap;
 
     Graph<Vector3> roomGraph = new Graph<Vector3>();
 
     private void Start()
     {
+
         GenerateDungeon();
     }
 
@@ -110,10 +115,10 @@ public class DungeonGenerator : MonoBehaviour
         return (roomHSplit, roomHSplit2);
     }
 
-/// <summary>
-/// The CheckIntersection coroutine checks through the rooms which are intersected with each other, visualizes them and adds doors to valid intersections.
-/// </summary>
-/// <returns></returns>
+    /// <summary>
+    /// The CheckIntersection coroutine checks through the rooms which are intersected with each other, visualizes them and adds doors to valid intersections.
+    /// </summary>
+    /// <returns></returns>
     IEnumerator CheckIntersection()
     {
         for (int i = 0; i < rooms.Count; i++)
@@ -137,10 +142,10 @@ public class DungeonGenerator : MonoBehaviour
                         doorPositions.Add(doorPos);
                     }
 
-                    else if (intersection.height == 1 && intersection.width >= 3) 
+                    else if (intersection.height == 1 && intersection.width >= 3)
                     {
                         int x = Random.Range(intersection.xMin + 1, intersection.xMax - 1);
-                        Vector3 doorPos = new Vector3(x +0.5f, 0, intersection.yMin + 0.5f);
+                        Vector3 doorPos = new Vector3(x + 0.5f, 0, intersection.yMin + 0.5f);
                         doorPositions.Add(doorPos);
                     }
                 }
@@ -153,7 +158,7 @@ public class DungeonGenerator : MonoBehaviour
     /// Adds all the nodes and edges to the dictionary, accessed from the Graph class to create a graph
     /// </summary>
     [Button]
-    public void CreateGraph() 
+    public void CreateGraph()
     {
         // Adds the locations of rooms and doors to the Graph
         foreach (var room in rooms)
@@ -202,9 +207,9 @@ public class DungeonGenerator : MonoBehaviour
         }
 
         // Draw edges
-        foreach (var fromNode in graphData.Keys) 
+        foreach (var fromNode in graphData.Keys)
         {
-            foreach (var toNode in graphData[fromNode]) 
+            foreach (var toNode in graphData[fromNode])
             {
                 Gizmos.DrawLine(fromNode, toNode);
             }
@@ -216,6 +221,42 @@ public class DungeonGenerator : MonoBehaviour
     // 1) SPAWN A FLOOR
     // 2) SPAWN WALLS
     // 3) REMOVE DOORS
+
+    [Button]
+    private void GenerateTileMap()
+    {
+        tileMap = new int[width, height];
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                tileMap[x, y] = 0;
+            }
+        }
+
+        foreach (var room in rooms)
+        {
+            for (int x = room.xMin; x < room.xMax; x++)
+            {
+                for (int y = room.yMin; y < room.yMax; y++) 
+                {
+                    tileMap[x, y] = 2;
+                }
+            }
+        }
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (tileMap[x, y] == 0)
+                {
+                    tileMap[x, y] = 1;
+                }
+            }
+        }
+    }
 
     // Starts the coroutine CheckIntersection by pressing the button
     [Button]
@@ -234,10 +275,11 @@ public class DungeonGenerator : MonoBehaviour
         {
             Debug.Log("Right amount of doors and rooms");
         }
-        else 
+        else
         {
             Debug.Log("The doors and rooms do not have the right amount.");
         }
+
     }
 
     [Button]
