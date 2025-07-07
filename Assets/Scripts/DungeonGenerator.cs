@@ -21,6 +21,7 @@ public class DungeonGenerator : MonoBehaviour
     private int[,] tileMap;
 
     public GameObject wall;
+    public GameObject wallsParent;
 
     Graph<Vector3> roomGraph = new Graph<Vector3>();
 
@@ -234,9 +235,9 @@ public class DungeonGenerator : MonoBehaviour
 
         foreach (var room in rooms)
         {
-            for (int x = room.xMin; x < room.xMax; x++)
+            for (int x = room.xMin + 1; x < room.xMax - 1; x++)
             {
-                for (int y = room.yMin; y < room.yMax; y++) 
+                for (int y = room.yMin + 1; y < room.yMax - 1; y++)
                 {
                     tileMap[x, y] = 0;
                 }
@@ -251,10 +252,22 @@ public class DungeonGenerator : MonoBehaviour
                 {
                     // Instantiate wall prefab at position (x, y)
                     Vector3 wallPos = new Vector3(x + 0.5f, 0, y + 0.5f); // center the tile
-                    Instantiate(wall, wallPos, Quaternion.identity, transform);
+                    Instantiate(wall, wallPos, Quaternion.identity, wallsParent.transform);
                 }
             }
         }
+
+        string mapString = "";
+        for (int y = height - 1; y >= 0; y--) // Print top to bottom
+        {
+            for (int x = 0; x < width; x++)
+            {
+                mapString += tileMap[x, y] + " ";
+            }
+            mapString += "\n";
+        }
+
+        Debug.Log(mapString);
     }
 
     // Starts the coroutine CheckIntersection by pressing the button
