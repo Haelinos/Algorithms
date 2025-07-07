@@ -18,7 +18,7 @@ public class DungeonGenerator : MonoBehaviour
 
     RectInt startRoom;
     private List<RectInt> rooms = new();
-    private List<Vector3> doorPositions = new();
+    private HashSet<Vector2Int> doorPositions = new();
     private int[,] tileMap;
 
     public GameObject wall;
@@ -142,14 +142,14 @@ public class DungeonGenerator : MonoBehaviour
                     if (intersection.width == 1 && intersection.height >= 3)
                     {
                         int y = Random.Range(intersection.yMin + 1, intersection.yMax - 1);
-                        Vector3 doorPos = new Vector3(intersection.xMin + 0.5f, 0, y + 0.5f);
+                        Vector2Int doorPos = new Vector2Int(intersection.xMin, y);
                         doorPositions.Add(doorPos);
                     }
 
                     else if (intersection.height == 1 && intersection.width >= 3)
                     {
                         int x = Random.Range(intersection.xMin + 1, intersection.xMax - 1);
-                        Vector3 doorPos = new Vector3(x + 0.5f, 0, intersection.yMin + 0.5f);
+                        Vector2Int doorPos = new Vector2Int(x, intersection.yMin);
                         doorPositions.Add(doorPos);
                     }
                 }
@@ -172,12 +172,12 @@ public class DungeonGenerator : MonoBehaviour
             roomGraph.AddNode(roomCenter);
             foreach (var door in doorPositions)
             {
-                roomGraph.AddNode(door);
+                Vector3 doorPos = new Vector3(door.x + 0.5f, 0, door.y + 0.5f);
+                roomGraph.AddNode(doorPos);
 
-                // Adds the edges from room centers and doors to each other to the graph
-                if (room.Contains(new Vector2Int(Mathf.FloorToInt(door.x), Mathf.FloorToInt(door.z))))
+                if (room.Contains(door))
                 {
-                    roomGraph.AddEdge(roomCenter, door);
+                    roomGraph.AddEdge(roomCenter, doorPos);
                 }
             }
         }
@@ -197,7 +197,8 @@ public class DungeonGenerator : MonoBehaviour
         // Draw doors
         foreach (var door in doorPositions)
         {
-            Gizmos.DrawCube(door, doorSize);
+            Vector3 doorWorld = new Vector3(door.x + 0.5f, 0, door.y + 0.5f);
+            Gizmos.DrawCube(doorWorld, doorSize);
         }
 
         // If the graph exists, the graph will be visualized
@@ -254,7 +255,7 @@ public class DungeonGenerator : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                if (tileMap[x, y] == 1)
+                if (tileMap[x, y] == 1 && !doorPositions.Contains(new Vector2Int(x,y)))
                 {
                     // Instantiate wall prefab at position (x, y)
                     Vector3 wallPos = new Vector3(x + 0.5f, 0, y + 0.5f); // center the tile
