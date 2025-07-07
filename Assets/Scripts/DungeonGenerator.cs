@@ -19,10 +19,13 @@ public class DungeonGenerator : MonoBehaviour
     RectInt startRoom;
     private List<RectInt> rooms = new();
     private HashSet<Vector2Int> doorPositions = new();
+    private HashSet<Vector2Int> floorPositions = new();
     private int[,] tileMap;
 
     public GameObject wall;
     public GameObject wallsParent;
+    public GameObject floor;
+    public GameObject floorParent;
 
     Graph<Vector3> roomGraph = new Graph<Vector3>();
 
@@ -246,9 +249,16 @@ public class DungeonGenerator : MonoBehaviour
             {
                 for (int y = room.yMin + 1; y < room.yMax - 1; y++)
                 {
+                    floorPositions.Add(new Vector2Int(x, y));
                     tileMap[x, y] = 0;
                 }
             }
+        }
+
+        foreach (var door in doorPositions) 
+        {
+            floorPositions.Add(door);
+            tileMap[door.x, door.y] = 0;
         }
 
         for (int x = 0; x < width; x++)
@@ -257,11 +267,18 @@ public class DungeonGenerator : MonoBehaviour
             {
                 if (tileMap[x, y] == 1 && !doorPositions.Contains(new Vector2Int(x,y)))
                 {
-                    // Instantiate wall prefab at position (x, y)
+                    // Instantiate wall prefab 
                     Vector3 wallPos = new Vector3(x + 0.5f, 0, y + 0.5f); // center the tile
                     Instantiate(wall, wallPos, Quaternion.identity, wallsParent.transform);
                 }
             }
+        }
+
+        foreach (var pos in floorPositions)
+        {
+            Vector3 floorPos = new Vector3(pos.x + 0.5f, 0, pos.y + 0.5f);
+            Quaternion rotation = Quaternion.Euler(90, 0, 0);
+            Instantiate(floor, floorPos, rotation, floorParent.transform);
         }
 
         // print tile map
