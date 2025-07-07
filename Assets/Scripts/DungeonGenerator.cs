@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Schema;
+using Unity.AI.Navigation;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class DungeonGenerator : MonoBehaviour
 {
+    [Header("Room Properties")]
     [SerializeField] private int width = 100;
     [SerializeField] private int height = 50;
     [SerializeField] private int minRoomSize = 6;
@@ -22,12 +24,14 @@ public class DungeonGenerator : MonoBehaviour
     private HashSet<Vector2Int> floorPositions = new();
     private int[,] tileMap;
 
+    [Header("Initialized GameObjects")]
     public GameObject wall;
     public GameObject wallsParent;
     public GameObject floor;
     public GameObject floorParent;
 
     Graph<Vector3> roomGraph = new Graph<Vector3>();
+    NavMeshSurface navMeshsurface;
 
     private void Start()
     {
@@ -274,6 +278,7 @@ public class DungeonGenerator : MonoBehaviour
             }
         }
 
+        // Instantiate floor prefab
         foreach (var pos in floorPositions)
         {
             Vector3 floorPos = new Vector3(pos.x + 0.5f, 0, pos.y + 0.5f);
@@ -293,6 +298,12 @@ public class DungeonGenerator : MonoBehaviour
         }
 
         Debug.Log(mapString);
+    }
+
+    [Button]
+    private void BuildNavMesh() 
+    { 
+    
     }
 
     // Starts the coroutine CheckIntersection by pressing the button
