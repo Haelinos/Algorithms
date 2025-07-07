@@ -31,7 +31,7 @@ public class DungeonGenerator : MonoBehaviour
     public GameObject floorParent;
 
     Graph<Vector3> roomGraph = new Graph<Vector3>();
-    NavMeshSurface navMeshsurface;
+   [SerializeField] private NavMeshSurface navMeshSurface;
 
     private void Start()
     {
@@ -302,8 +302,8 @@ public class DungeonGenerator : MonoBehaviour
 
     [Button]
     private void BuildNavMesh() 
-    { 
-    
+    {
+        navMeshSurface.BuildNavMesh();
     }
 
     // Starts the coroutine CheckIntersection by pressing the button
