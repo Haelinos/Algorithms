@@ -11,8 +11,9 @@ public class DungeonGenerator : MonoBehaviour
 {
     [SerializeField] private int width = 100;
     [SerializeField] private int height = 50;
-
     [SerializeField] private int minRoomSize = 6;
+    [SerializeField] private bool showDebugGizmos = true;
+
     private Vector3 doorSize = new Vector3(1, 1, 1);
 
     RectInt startRoom;
@@ -190,6 +191,9 @@ public class DungeonGenerator : MonoBehaviour
     /// </summary>
     private void OnDrawGizmos()
     {
+        // boolean that removes gizmos when set to true
+        if (!showDebugGizmos) return;
+
         // Draw doors
         foreach (var door in doorPositions)
         {
@@ -221,8 +225,10 @@ public class DungeonGenerator : MonoBehaviour
     }
 
     [Button]
-    private void GenerateTileMap()
+    private void SpawnAssets()
     {
+        DebugDrawingBatcher.ClearCalls();
+        showDebugGizmos = false;
         tileMap = new int[width, height];
 
         for (int x = 0; x < width; x++)
@@ -257,6 +263,7 @@ public class DungeonGenerator : MonoBehaviour
             }
         }
 
+        // print tile map
         string mapString = "";
         for (int y = height - 1; y >= 0; y--) // Print top to bottom
         {
