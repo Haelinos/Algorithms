@@ -16,6 +16,7 @@ public class MouseClickController : MonoBehaviour
         // Get the mouse click position in world space 
         if (Input.GetMouseButtonDown(0))
         {
+            // Raycast from camera to mouse click position
             mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(mouseRay, out RaycastHit hitInfo))
             {

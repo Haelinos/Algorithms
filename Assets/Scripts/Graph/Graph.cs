@@ -11,7 +11,10 @@ public class Graph<T>
     public Graph() { adjacencyList = new Dictionary<T, List<T>>(); }
 
 
-    // Add nodes to Graph
+    /// <summary>
+    /// Add nodes to the graph
+    /// </summary>
+    /// <param name="node"></param>
     public void AddNode(T node) 
     {
         if (!adjacencyList.ContainsKey(node))
@@ -22,7 +25,11 @@ public class Graph<T>
 
     }
 
-    // Add edges to Graph
+    /// <summary>
+    /// Add edges to the graph
+    /// </summary>
+    /// <param name="fromNode"></param>
+    /// <param name="toNode"></param>
     public void AddEdge(T fromNode, T toNode) 
     {
         if (!adjacencyList.ContainsKey(fromNode) || !adjacencyList.ContainsKey(toNode)) 
@@ -45,6 +52,11 @@ public class Graph<T>
         }
     }
 
+    /// <summary>
+    /// BFS algorithm
+    /// </summary>
+    /// <param name="startNode"></param>
+    /// <returns></returns>
     public List<T> SearchGraph(T startNode)
     {
         // Create a queue and list for visited nodes
@@ -61,6 +73,7 @@ public class Graph<T>
             T current = queue.Dequeue();
             Debug.Log("visited, " + current);
 
+            // If the neighbor is not visited yet, put them in the queue and add them to the visited list
             foreach (var neighbor in adjacencyList[current])
             { 
                 if (!visitedNodes.Contains(neighbor))
@@ -75,13 +88,15 @@ public class Graph<T>
         return visitedNodes;
     }
 
-    // TO DO: create debug visibility of that created graph
-
+    // Returns the adjacencylist 
     public Dictionary<T, List<T>> GetAdjacencyList()
     {
         return adjacencyList;
     }
 
+    /// <summary>
+    /// Checks whether the visited graph nodes and adjacencylist correspond for a connected dungeon
+    /// </summary>
     public void ConnectedChecker()
     {
         if (adjacencyList.Count == 0)
@@ -94,6 +109,7 @@ public class Graph<T>
         T startNode = adjacencyList.Keys.First();
         List<T> visitedNodes = SearchGraph(startNode);
 
+        // Visual debug
         if (visitedNodes.Count == adjacencyList.Count)
         {
             Debug.Log("The Graph is fully connected!");

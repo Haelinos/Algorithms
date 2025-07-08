@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
     }
 
+    // Go to destination with pathfinding
     public void GoToDestination(Vector3 destination)
     {
         navMeshAgent.SetDestination(destination);

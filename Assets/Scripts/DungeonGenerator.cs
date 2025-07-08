@@ -232,13 +232,18 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Creates a tilemap and spawn wall and floor assets according to the tilemap
+    /// </summary>
     [Button]
     private void SpawnAssets()
     {
+        // Clear visual debugging
         DebugDrawingBatcher.ClearCalls();
         showDebugGizmos = false;
         tileMap = new int[width, height];
 
+        // Tiles get changed to 1 (wall)
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -247,18 +252,21 @@ public class DungeonGenerator : MonoBehaviour
             }
         }
 
+        // Tiles changed to 0 (floor) with -1 off for walls
         foreach (var room in rooms)
         {
             for (int x = room.xMin + 1; x < room.xMax - 1; x++)
             {
                 for (int y = room.yMin + 1; y < room.yMax - 1; y++)
                 {
+                    // Add them to floor hashset
                     floorPositions.Add(new Vector2Int(x, y));
                     tileMap[x, y] = 0;
                 }
             }
         }
 
+        // Adds door positions to hashset floor and changes the tiles to 0
         foreach (var door in doorPositions) 
         {
             floorPositions.Add(door);
@@ -272,7 +280,7 @@ public class DungeonGenerator : MonoBehaviour
                 if (tileMap[x, y] == 1 && !doorPositions.Contains(new Vector2Int(x,y)))
                 {
                     // Instantiate wall prefab 
-                    Vector3 wallPos = new Vector3(x + 0.5f, 0, y + 0.5f); // center the tile
+                    Vector3 wallPos = new Vector3(x + 0.5f, 0, y + 0.5f);
                     Instantiate(wall, wallPos, Quaternion.identity, wallsParent.transform);
                 }
             }
